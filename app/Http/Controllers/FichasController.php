@@ -56,7 +56,8 @@ class FichasController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $fichas = Ficha::find($id);
+        return Inertia::render('fichas/edit', ["fichas"=>$fichas]);
     }
 
     /**
@@ -64,7 +65,19 @@ class FichasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'descripcion' => 'required',
+            'imagen' => 'required'
+        ]);
+
+        $fichas = Ficha::find($id);
+        $fichas->nombre = $request->get('nombre');
+        $fichas->descripcion = $request->get('descripcion');
+        $fichas->imagen = $request->get('imagen');
+        $fichas->save();
+
+        return redirect()->route('fichas.index');
     }
 
     /**
@@ -72,6 +85,7 @@ class FichasController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Ficha::destroy($id);
+        return redirect()->route('fichas.index');
     }
 }

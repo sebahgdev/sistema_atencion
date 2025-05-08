@@ -1,8 +1,16 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
+import { useState } from 'react'
+import { DialogModal } from './dialog' // importa el modal
 import { type BreadcrumbItem } from '@/types';
-import { Head,Link, usePage } from '@inertiajs/react';
+import { Head,Link, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
 
+import { type Ficha, columns } from "./columns"
+
+import type { PageProps as InertiaPageProps } from "@inertiajs/core";
+
+import { DataTable } from "./data-table"
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -14,8 +22,27 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+
+
 export default function Ficha() {
-    const {fichas} = usePage().props;
+
+    const [editingRow, setEditingRow] = useState<Ficha | null>(null)
+const handleEdit = (row: Ficha) => {
+    console.log(row)
+    setEditingRow(row)
+  }
+    interface PageProps extends InertiaPageProps {
+        fichas: Ficha[];
+      }
+
+      const { fichas } = usePage<PageProps>().props;
+    const {delete:destroy} = useForm();
+    const destroyFicha: FormEventHandler = (e,id) => {
+        e.preventDefault();
+       if (window.confirm('Estas seguro de eliminar el ficha?')) {
+        destroy(route('fichas.destroy',id));
+       }
+    }
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Creacion ficha" />
@@ -30,7 +57,12 @@ export default function Ficha() {
 
             </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+
+                <DataTable columns={columns} data={fichas}   enableFilterColumn="nombre" enableColumnToggle   enableActions
+  /* onEdit={(row) => console.log("Editar:", row)} */
+  onEdit={handleEdit}
+  onDelete={(row) => console.log("Eliminar:", row)}/>
+                {/*     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                         <th scope="col" className='px-6 py-3'>ID</th>
                         <th scope="col" className='px-6 py-3'>Nombre</th>
@@ -46,7 +78,8 @@ export default function Ficha() {
                         <td></td>
                        </tr>
                         <tbody>
-                            {fichas.map(({nombre,descripcion,imagen}) => (
+                            {fichas.map(({id,nombre,descripcion,imagen}) => (
+
 
 
 
@@ -55,14 +88,33 @@ export default function Ficha() {
                                 <td>{nombre}</td>
                                 <td>{descripcion}</td>
                                 <td>{imagen}</td>
-                                <td></td>
+                                <td>
+                                    <form onSubmit={(e) => destroyFicha(e,id)}>
+                                    <Link
+                                    href={route('fichas.edit',id)}
+                                    className="px-3 py-2 text-xs-font-medium  bg-primary rounded-lg">
+                                        Editar
+                                    </Link>
+
+                                    <button className="px-3 py-2 text-xs-font-medium  bg-primary rounded-lg">
+                                        Eliminar
+                                    </button>
+                                    </form>
+                                </td>
                             </tr>
                                  ))}
 
                         </tbody>
-                    </table>
+                    </table> */}
                 </div>
             </div>
+
+            {editingRow && (
+        <DialogModal
+          row={editingRow}
+          onClose={() => setEditingRow(null)}
+        />
+      )}
         </AppLayout>
     );
 }
