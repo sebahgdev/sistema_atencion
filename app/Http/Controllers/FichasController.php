@@ -77,7 +77,7 @@ class FichasController extends Controller
         $fichas->imagen = $request->get('imagen');
         $fichas->save();
 
-        return redirect()->route('fichas.index');
+        return redirect()->route('fichas.index')->with('success', 'Ficha actualizada exitosamente.');
     }
 
     /**

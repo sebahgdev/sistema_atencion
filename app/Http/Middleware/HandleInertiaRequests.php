@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -51,6 +51,11 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+                // Agregar los mensajes flash si existen
+        'flash' => [
+            'success' => Session::get('success'),
+            'error' => Session::get('error'),
+        ],
         ];
     }
 }

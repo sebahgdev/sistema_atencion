@@ -1,4 +1,6 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { toast  } from "sonner"
+import { useEffect } from 'react'
 import AppLayout from '@/layouts/app-layout';
 import { useState } from 'react'
 import { DialogModal } from './dialog' // importa el modal
@@ -35,7 +37,25 @@ const handleEdit = (row: Ficha) => {
         fichas: Ficha[];
       }
 
-      const { fichas } = usePage<PageProps>().props;
+      const { flash ,fichas } = usePage<PageProps>().props;
+
+      console.log(flash)
+
+
+      useEffect(() => {
+
+        if (flash?.success) {
+            console.log('entro flash')
+            toast.success(flash.success);
+          }
+
+          if (flash?.error) {
+            toast.error(flash.error);
+          }
+      }, [flash])
+
+
+
     const {delete:destroy} = useForm();
     const destroyFicha: FormEventHandler = (e,id) => {
         e.preventDefault();
