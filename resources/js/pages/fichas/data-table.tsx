@@ -116,6 +116,7 @@ export function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onPaginationChange: setPagination,
+        getPaginationRowModel: getPaginationRowModel(),
     })
 
     const handleExport = () => {
