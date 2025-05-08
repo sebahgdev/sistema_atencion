@@ -39,7 +39,7 @@ class FichasController extends Controller
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'imagen' => $request->imagen]);
-        return redirect()->route('fichas.index');
+        return redirect()->route('fichas.index')->with('success', 'Ficha creada exitosamente.');
 
     }
 
